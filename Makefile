@@ -4,16 +4,16 @@ run:
 	go run cmd/main/main.go
 
 push:
-	git push git@github.com:RB-PRO/zzapparser.git
+	git push git@github.com:RB-PRO/AutoPartsParser.git
 
 pull:
-	git pull git@github.com:RB-PRO/zzapparser.git
+	git pull git@github.com:RB-PRO/AutoPartsParser.git
 
 pushW:
-	git push https://github.com/RB-PRO/zzapparser.git
+	git push https://github.com/RB-PRO/AutoPartsParser.git
 
 pullW:
-	git pull https://github.com/RB-PRO/zzapparser.git
+	git pull https://github.com/RB-PRO/AutoPartsParser.git
 
 build-config:
 	go env GOOS GOARCH
