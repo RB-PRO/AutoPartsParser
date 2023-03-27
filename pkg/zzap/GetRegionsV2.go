@@ -3,6 +3,7 @@ package zzap
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 // ## МЕТОД "РЕГИОНЫ ПОИСКА" (GETREGIONSV2)
@@ -48,4 +49,14 @@ func (lap *Lap) GetRegionsV2() error {
 
 	lap.Regions = GetRegionsV2Resp.Table
 	return nil
+}
+
+// Найти Московский регион для дальнейшего поиска деталей
+func (lap *Lap) FindRegionMSK() int {
+	for _, val := range lap.Regions {
+		if strings.Contains(val.ClassRegion, "Москва") {
+			return val.CodeRegion
+		}
+	}
+	return 0
 }

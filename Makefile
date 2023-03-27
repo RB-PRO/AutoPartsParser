@@ -32,4 +32,4 @@ build-car:
 	export CGO_ENABLED=0
 	go env GOOS GOARCH
 	go build -o main ./cmd/main/main.go
-	scp main lap.json root@194.87.107.129:go/zzapparser/
+	scp main lap.json root@194.87.107.129:go/AutoPartsParser/

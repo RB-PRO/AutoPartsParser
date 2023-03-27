@@ -33,7 +33,7 @@ import (
 const (
 	URL      string = "https://api.zzap.pro/webservice/datasharing.asmx"
 	Login    string = "login"
-	Password string = "passwords"
+	Password string = "password"
 	ApiKey   string = "api_key"
 )
 
