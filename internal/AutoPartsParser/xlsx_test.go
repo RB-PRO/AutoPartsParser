@@ -23,3 +23,10 @@ func TestXlsx(t *testing.T) {
 		fmt.Println(index, "-", value.Name, ",", value.Manufacture)
 	}
 }
+
+func TestSaveXlsx(t *testing.T) {
+	err := AutoPartsParser.SaveXlsx(true, true, []AutoPartsParser.Avtoto_Output{}, []AutoPartsParser.ZZap_Output{})
+	if err != nil {
+		t.Error(err)
+	}
+}

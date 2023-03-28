@@ -18,16 +18,25 @@ func TestGetSearchResultV3(t *testing.T) {
 	request := zzap.GetSearchResultV3_request{
 		Code_region:  "1",
 		Search_text:  "",
-		Partnumber:   "5QF413032B",
-		Class_man:    "vag",
-		Row_count:    "100",
-		Type_request: "0",
+		Partnumber:   "JNB000060", // JNB000060
+		Class_man:    "LAND ROVER",
+		Row_count:    "500",
+		Type_request: "5",
 	}
 
-	errorGetRegionsV2 := lap.GetSearchResultV3(request)
-	if errorGetRegionsV2 != nil {
-		t.Error(errorGetRegionsV2)
+	GetSearchResultV3Resp, ErrorGetSearchResultV3 := lap.GetSearchResultV3(request)
+	if ErrorGetSearchResultV3 != nil {
+		t.Error(ErrorGetSearchResultV3)
 	}
 
-	fmt.Println("GetRegionsV2: Всего найдено", len(lap.Regions), "записей.")
+	for _, val := range GetSearchResultV3Resp.Table {
+		fmt.Println(val.DeliveryDays, val.DescrDelivery)
+	}
+
+	fmt.Println("Товаров в наличии:", GetSearchResultV3Resp.PriceCountInstock)
+	fmt.Println("Минимум цены в наличии:", GetSearchResultV3Resp.PriceMinInstock)
+	fmt.Println("Средняя цена среди товаров в наличии", GetSearchResultV3Resp.PriceAvgInstock) // Средняя цена среди товаров в наличии
+	fmt.Println("Максимум цены в наличии:", GetSearchResultV3Resp.PriceMaxInstock)
+
+	fmt.Println("GetSearchResultV3: Всего найдено", len(GetSearchResultV3Resp.Table), "записей.")
 }

@@ -21,17 +21,13 @@ func StartConsole() {
 	switch Input {
 	case 1:
 		AvtotoIsParse = true
-		break
 	case 2:
 		ZZapIsParse = true
-		break
 	case 3:
 		AvtotoIsParse = true
 		ZZapIsParse = true
-		break
 	default:
 		fmt.Println("Некорректный ввод. Введите 1, 2 или 3.")
-		break
 	}
 
 	// Запускаем парсинг
