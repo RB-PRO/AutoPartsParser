@@ -7,12 +7,14 @@ import (
 	"os"
 )
 
+// Запустить программу с выбора режима работы
 func StartConsole() {
 	log.Println()
-	fmt.Println(`Введите режим работы:
+	fmt.Print(`Введите режим работы:
 -> 1 - Только Avtoto
 -> 2 - Только ZZap
--> 3 - Avtoto и ZZap`)
+-> 3 - Avtoto и ZZap
+ > `)
 	var Input int
 	fmt.Scan(&Input)
 
@@ -31,7 +33,7 @@ func StartConsole() {
 	}
 
 	// Запускаем парсинг
-	if !AvtotoIsParse || !ZZapIsParse {
+	if AvtotoIsParse || ZZapIsParse {
 		ErrorParse := Parse(AvtotoIsParse, ZZapIsParse)
 		if ErrorParse != nil {
 			log.Println(ErrorParse)

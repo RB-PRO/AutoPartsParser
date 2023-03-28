@@ -75,19 +75,21 @@ func SaveXlsx(AvtotoIsParse, ZZapIsParse bool, Avtoto []Avtoto_Output, ZZap []ZZ
 
 // Сохранить результаты по ZZap
 func saveZZap(f *excelize.File, ZZap []ZZap_Output) {
-	f.SetCellValue("ZZap", "A1", "Артикул")
-	f.SetCellValue("ZZap", "B1", "Производитель")
-	f.SetCellValue("ZZap", "C1", "количество предложений в наличии запрашиваемой запчасти")
-	f.SetCellValue("ZZap", "D1", "минимальная цена среди предложений в наличии запрашиваемой запчасти")
-	f.SetCellValue("ZZap", "E1", "средняя цена среди предложений в наличии запрашиваемой запчасти")
-	f.SetCellValue("ZZap", "F1", "Максимальная цена среди предложений в наличии запрашиваемой запчасти")
+	f.SetCellValue("ZZap", "A1", "Название товара")
+	f.SetCellValue("ZZap", "B1", "Артикул")
+	f.SetCellValue("ZZap", "C1", "Производитель")
+	f.SetCellValue("ZZap", "D1", "количество предложений в наличии запрашиваемой запчасти")
+	f.SetCellValue("ZZap", "E1", "минимальная цена среди предложений в наличии запрашиваемой запчасти")
+	f.SetCellValue("ZZap", "F1", "средняя цена среди предложений в наличии запрашиваемой запчасти")
+	f.SetCellValue("ZZap", "G1", "Максимальная цена среди предложений в наличии запрашиваемой запчасти")
 	for index, value := range ZZap {
-		f.SetCellValue("ZZap", "A"+strconv.Itoa(index+2), value.Name)              // Название детали
-		f.SetCellValue("ZZap", "B"+strconv.Itoa(index+2), value.Manuf)             // Производитель
-		f.SetCellValue("ZZap", "C"+strconv.Itoa(index+2), value.PriceCountInstock) // количество предложений в наличии запрашиваемой запчасти
-		f.SetCellValue("ZZap", "D"+strconv.Itoa(index+2), value.PriceMinInstock)   // минимальная цена среди предложений в наличии запрашиваемой запчасти
-		f.SetCellValue("ZZap", "E"+strconv.Itoa(index+2), value.PriceAvgInstock)   // средняя цена среди предложений в наличии запрашиваемой запчасти
-		f.SetCellValue("ZZap", "F"+strconv.Itoa(index+2), value.PriceMaxInstock)   // Максимальная цена среди предложений в наличии запрашиваемой запчасти
+		f.SetCellValue("ZZap", "A"+strconv.Itoa(index+2), value.RealName)          // Название детали
+		f.SetCellValue("ZZap", "B"+strconv.Itoa(index+2), value.Name)              // Название детали
+		f.SetCellValue("ZZap", "C"+strconv.Itoa(index+2), value.Manuf)             // Производитель
+		f.SetCellValue("ZZap", "D"+strconv.Itoa(index+2), value.PriceCountInstock) // количество предложений в наличии запрашиваемой запчасти
+		f.SetCellValue("ZZap", "E"+strconv.Itoa(index+2), value.PriceMinInstock)   // минимальная цена среди предложений в наличии запрашиваемой запчасти
+		f.SetCellValue("ZZap", "F"+strconv.Itoa(index+2), value.PriceAvgInstock)   // средняя цена среди предложений в наличии запрашиваемой запчасти
+		f.SetCellValue("ZZap", "G"+strconv.Itoa(index+2), value.PriceMaxInstock)   // Максимальная цена среди предложений в наличии запрашиваемой запчасти
 	}
 }
 
@@ -108,13 +110,13 @@ func saveAvtoto(f *excelize.File, Avtoto []Avtoto_Output) {
 	f.SetCellValue(ssheet, "L1", "Цена2*0.9")
 	f.SetCellValue(ssheet, "M1", "Склад2")
 	f.SetCellValue(ssheet, "N1", "Доставка2")
-	f.SetCellValue(ssheet, "P1", "Количество2")
+	f.SetCellValue(ssheet, "O1", "Количество2")
 
-	f.SetCellValue(ssheet, "R1", "Цена3")
-	f.SetCellValue(ssheet, "S1", "Цена3*0.9")
-	f.SetCellValue(ssheet, "T1", "Склад3")
-	f.SetCellValue(ssheet, "U1", "Доставка3")
-	f.SetCellValue(ssheet, "V1", "Количество3")
+	f.SetCellValue(ssheet, "Q1", "Цена3")
+	f.SetCellValue(ssheet, "R1", "Цена3*0.9")
+	f.SetCellValue(ssheet, "S1", "Склад3")
+	f.SetCellValue(ssheet, "T1", "Доставка3")
+	f.SetCellValue(ssheet, "U1", "Количество3")
 
 	for index, value := range Avtoto {
 		f.SetCellValue(ssheet, "A"+strconv.Itoa(index+2), value.SKU)
@@ -131,18 +133,18 @@ func saveAvtoto(f *excelize.File, Avtoto []Avtoto_Output) {
 			f.SetCellValue(ssheet, "I"+strconv.Itoa(index+2), value.Parts.Parts[0].MaxCount)
 		}
 		if len(value.Parts.Parts) >= 2 {
-			f.SetCellValue(ssheet, "E"+strconv.Itoa(index+2), value.Parts.Parts[1].Price)
-			f.SetCellValue(ssheet, "F"+strconv.Itoa(index+2), float64(value.Parts.Parts[1].Price)*0.9)
-			f.SetCellValue(ssheet, "G"+strconv.Itoa(index+2), value.Parts.Parts[1].Storage)
-			f.SetCellValue(ssheet, "H"+strconv.Itoa(index+2), value.Parts.Parts[1].Delivery)
-			f.SetCellValue(ssheet, "I"+strconv.Itoa(index+2), value.Parts.Parts[1].MaxCount)
+			f.SetCellValue(ssheet, "K"+strconv.Itoa(index+2), value.Parts.Parts[1].Price)
+			f.SetCellValue(ssheet, "L"+strconv.Itoa(index+2), float64(value.Parts.Parts[1].Price)*0.9)
+			f.SetCellValue(ssheet, "M"+strconv.Itoa(index+2), value.Parts.Parts[1].Storage)
+			f.SetCellValue(ssheet, "N"+strconv.Itoa(index+2), value.Parts.Parts[1].Delivery)
+			f.SetCellValue(ssheet, "O"+strconv.Itoa(index+2), value.Parts.Parts[1].MaxCount)
 		}
 		if len(value.Parts.Parts) >= 3 {
-			f.SetCellValue(ssheet, "E"+strconv.Itoa(index+2), value.Parts.Parts[2].Price)
-			f.SetCellValue(ssheet, "F"+strconv.Itoa(index+2), float64(value.Parts.Parts[2].Price)*0.9)
-			f.SetCellValue(ssheet, "G"+strconv.Itoa(index+2), value.Parts.Parts[2].Storage)
-			f.SetCellValue(ssheet, "H"+strconv.Itoa(index+2), value.Parts.Parts[2].Delivery)
-			f.SetCellValue(ssheet, "I"+strconv.Itoa(index+2), value.Parts.Parts[2].MaxCount)
+			f.SetCellValue(ssheet, "Q"+strconv.Itoa(index+2), value.Parts.Parts[2].Price)
+			f.SetCellValue(ssheet, "R"+strconv.Itoa(index+2), float64(value.Parts.Parts[2].Price)*0.9)
+			f.SetCellValue(ssheet, "S"+strconv.Itoa(index+2), value.Parts.Parts[2].Storage)
+			f.SetCellValue(ssheet, "T"+strconv.Itoa(index+2), value.Parts.Parts[2].Delivery)
+			f.SetCellValue(ssheet, "U"+strconv.Itoa(index+2), value.Parts.Parts[2].MaxCount)
 		}
 	}
 }

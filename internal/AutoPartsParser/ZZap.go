@@ -9,7 +9,8 @@ import (
 )
 
 type ZZap_Output struct {
-	Name              string  // Название детали
+	Name              string  // Артикул
+	RealName          string  // Название товара
 	Manuf             string  // Производитель
 	PriceCountInstock int     `json:"price_count_instock"` // количество предложений в наличии запрашиваемой запчасти
 	PriceMinInstock   float64 `json:"price_min_instock"`   // минимальная цена среди предложений в наличии запрашиваемой запчасти
@@ -57,6 +58,7 @@ func ZZapParse(ReqXlsx []Request) ([]ZZap_Output, error) {
 		output = append(output, ZZap_Output{
 			Name:              ValueInput.Name,
 			Manuf:             ValueInput.Manufacture,
+			RealName:          GetSearchResultV3Resp.ClassCat,
 			PriceCountInstock: GetSearchResultV3Resp.PriceCountInstock,
 			PriceMinInstock:   GetSearchResultV3Resp.PriceMinInstock,
 			PriceAvgInstock:   GetSearchResultV3Resp.PriceAvgInstock,

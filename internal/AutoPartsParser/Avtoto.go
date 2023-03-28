@@ -2,7 +2,6 @@ package AutoPartsParser
 
 import (
 	"fmt"
-	"log"
 	"sort"
 	"strconv"
 	"time"
@@ -21,15 +20,6 @@ type Avtoto_Output struct {
 
 	Parts avtoto.SearchGetParts2Response // Структура, в которй содержится вся полезная инфомрация
 
-	/*
-		Product [3]struct {
-			Price           int    // Цена
-			Storage         string // [*] Склад
-			Delivery        string // [*] Срок доставки
-			MaxCount        string // [*] Максимальное количество для заказа, остаток по складу. Значение "-1" - означает "много" или "неизвестно"
-			DeliveryPercent int    // [**] Процент успешных закупок из общего числа заказов
-		}
-	*/
 }
 
 func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
@@ -55,7 +45,7 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 	for _, ValueInput := range ReqXlsx {
 
 		// Поиск кода бренда
-		fmt.Println("ValueInput.Manufacture", ValueInput.Name)
+		//fmt.Println("ValueInput.Manufacture", ValueInput.Name)
 		GetBrandsByCodeReq := avtoto.GetBrandsByCodeRequest{
 			SearchCode: ValueInput.Name,
 		}
@@ -65,18 +55,11 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 		}
 		var BrandID string
 		for _, val := range GetBrandsByCodeResp.Brands {
-			fmt.Println(val.Name, ValueInput.Manufacture)
+			//fmt.Println(val.Name, ValueInput.Manufacture)
 			if val.Name == ValueInput.Manufacture {
 				BrandID = val.Manuf
 			}
 		}
-
-		// Если такой бренд не найден
-		if BrandID == "" {
-			//continue
-		}
-
-		fmt.Println("BrandID", BrandID)
 
 		// Создать запрос старта поиска
 		SearchStartReq := avtoto.SearchStartRequest{
@@ -91,12 +74,12 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 			time.Sleep(200 * time.Millisecond)
 			var ErrorStart error
 			SearchStartResp, ErrorStart = user.SearchStartRequest(SearchStartReq)
-			fmt.Println(SearchStartResp.Error())
+			//fmt.Println(SearchStartResp.Error())
 			if SearchStartResp.Error() == "" {
 				break
 			}
 			if ErrorStart != nil {
-				log.Println(ErrorStart)
+				return []Avtoto_Output{}, ErrorStart // log.Println(ErrorStart)
 			}
 		}
 
@@ -113,7 +96,6 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 	fmt.Println("[RB_PRO]: Ждём 10 секунд")
 	time.Sleep(10 * time.Second)
 	bar2 := pb.StartNew(len(ReqXlsx)).Prefix("[300 мс]: Опрашиваем результаты") // Включить показывание процесса
-	defer bar2.Finish()                                                         // Завершить
 
 	AllSize := len(output)
 	TecalSize := 0
@@ -129,24 +111,26 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 
 				// Выполняем запрос
 				SearchResp, ErrorSearch := SearchGetParts2Req.SearchGetParts2()
-				fmt.Println(SearchResp.Status())
 				if ErrorSearch != nil {
-					continue
-				}
-				if SearchResp.Status() == "Запрос в обработке" {
-					continue
+					continue // Повторить поиск по заданному ID процесса
 				}
 
+				// Проверка на неготовность обработки поска
+				if SearchResp.Status() == "Запрос в обработке" {
+					continue // Повторить поиск по заданному ID процесса
+				}
+
+				// Профильтровать полученные результаты
 				output[Index].Parts = Avtoto_Filter(SearchResp)
 
 				// Обработка готового события
 				TecalSize++
 				output[Index].IsOk = true
 				bar2.Increment() // Прибавляем 1 к отображению
-				//fmt.Println("Найден результат", SearchResp.Status())
 			}
 		}
 	}
+	bar2.Finish() // Завершить
 
 	return output, nil
 }
@@ -157,14 +141,12 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response) avtoto.SearchGetPa
 
 	// Срок доставки меньше 7 и колличество больше 1
 	for _, value := range SearchResp.Parts {
-		fmt.Println("->", value.Delivery, value.MaxCount)
 		delivery, _ := strconv.Atoi(value.Delivery)
 		MaxCount, _ := strconv.Atoi(value.MaxCount)
 		if delivery < 7 && (MaxCount > 1 || MaxCount == -1) {
 			NewParts.Parts = append(NewParts.Parts, value)
 		}
 	}
-	fmt.Println("len", len(NewParts.Parts))
 
 	if len(NewParts.Parts) > 1 {
 		sort.Slice(NewParts.Parts, func(i, j int) (less bool) {
@@ -172,5 +154,5 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response) avtoto.SearchGetPa
 		})
 	}
 
-	return SearchResp
+	return NewParts
 }
