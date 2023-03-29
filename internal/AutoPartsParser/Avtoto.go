@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/RB-PRO/avtoto"
@@ -46,6 +47,8 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 
 		// Поиск кода бренда
 		//fmt.Println("ValueInput.Manufacture", ValueInput.Name)
+
+		// Делаем запрос на получение кода
 		GetBrandsByCodeReq := avtoto.GetBrandsByCodeRequest{
 			SearchCode: ValueInput.Name,
 		}
@@ -56,7 +59,7 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 		var BrandID string
 		for _, val := range GetBrandsByCodeResp.Brands {
 			//fmt.Println(val.Name, ValueInput.Manufacture)
-			if val.Name == ValueInput.Manufacture {
+			if val.Name == strings.ToUpper(ValueInput.Manufacture) {
 				BrandID = val.Manuf
 			}
 		}

@@ -41,7 +41,6 @@ func StartConsole() {
 	}
 
 	// "Мягкий" выход из программы
-	fmt.Println("Press 'q' to quit")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		exit := scanner.Text()

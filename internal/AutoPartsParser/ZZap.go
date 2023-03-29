@@ -2,6 +2,7 @@ package AutoPartsParser
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/RB-PRO/AutoPartsParser/pkg/zzap"
@@ -47,7 +48,7 @@ func ZZapParse(ReqXlsx []Request) ([]ZZap_Output, error) {
 			Code_region:  strconv.Itoa(RegionMSK),
 			Search_text:  "",
 			Partnumber:   ValueInput.Name,
-			Class_man:    ValueInput.Manufacture,
+			Class_man:    strings.ToUpper(ValueInput.Manufacture),
 			Row_count:    "500",
 			Type_request: "5",
 		}
