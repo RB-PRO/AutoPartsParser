@@ -124,7 +124,7 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 				}
 
 				// Профильтровать полученные результаты
-				output[Index].Parts = Avtoto_Filter(SearchResp)
+				output[Index].Parts = Avtoto_Filter(SearchResp, output[Index].Manufacture)
 
 				// Обработка готового события
 				TecalSize++
@@ -139,7 +139,7 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 }
 
 // Фильтрация по бизнес-логике
-func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response) avtoto.SearchGetParts2Response {
+func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response, manuf string) avtoto.SearchGetParts2Response {
 	var NewParts avtoto.SearchGetParts2Response
 
 	// Срок доставки меньше 7 и колличество больше 1
@@ -151,11 +151,21 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response) avtoto.SearchGetPa
 		}
 	}
 
-	if len(NewParts.Parts) > 1 {
-		sort.Slice(NewParts.Parts, func(i, j int) (less bool) {
-			return NewParts.Parts[i].Price < NewParts.Parts[j].Price
-		})
+	// if len(NewParts.Parts) > 1 {
+	sort.Slice(NewParts.Parts, func(i, j int) (less bool) {
+		return NewParts.Parts[i].Price < NewParts.Parts[j].Price
+	})
+	// }
+
+	// Цикл по всем параметрам
+	var NewPartsParts avtoto.SearchGetParts2Response
+	for _, value := range NewParts.Parts {
+		if strings.TrimSpace(strings.ToLower(value.Manuf)) == strings.TrimSpace(strings.ToLower(manuf)) {
+			NewPartsParts.Parts = append(NewPartsParts.Parts, value)
+			// OutputSearchGetParts2Response.Parts = append(OutputSearchGetParts2Response.Parts, value)
+			// SearchResp.Parts = append(SearchResp.Parts[:i], SearchResp.Parts[i+1])
+		}
 	}
 
-	return NewParts
+	return NewPartsParts
 }

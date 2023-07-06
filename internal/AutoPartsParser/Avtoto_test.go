@@ -29,5 +29,5 @@ func TestGetBrandsByCode(t *testing.T) {
 		t.Error(ErrGetBrandsByCodeResp)
 	}
 
-	fmt.Println(GetBrandsByCodeResp)
+	fmt.Printf("%+#v", GetBrandsByCodeResp)
 }
