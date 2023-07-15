@@ -42,7 +42,7 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 	var output []Avtoto_Output
 
 	// Цикл по всему входному файлу
-	bar := pb.StartNew(len(ReqXlsx)).Prefix("[200 мс]: Запускаем поиск") // Включить показывание процесса
+	bar := pb.StartNew(len(ReqXlsx)).Prefix("[300 мс]: Запускаем поиск") // Включить показывание процесса
 	for _, ValueInput := range ReqXlsx {
 
 		// Поиск кода бренда
@@ -56,10 +56,11 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 		if ErrGetBrandsByCodeResp != nil {
 			return []Avtoto_Output{}, ErrGetBrandsByCodeResp
 		}
+		// fmt.Printf(">>%+v\n", GetBrandsByCodeResp)
 		var BrandID string
 		for _, val := range GetBrandsByCodeResp.Brands {
-			//fmt.Println(val.Name, ValueInput.Manufacture)
-			if val.Name == strings.ToUpper(ValueInput.Manufacture) {
+			// fmt.Println("---", val.Name, val.Manuf, ValueInput.Manufacture)
+			if strings.EqualFold(val.Manuf, ValueInput.Manufacture) {
 				BrandID = val.Manuf
 			}
 		}
@@ -74,7 +75,7 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 		// Выполнение самого запроса "до талого"
 		var SearchStartResp avtoto.SearchStartResponse
 		for {
-			time.Sleep(200 * time.Millisecond)
+			time.Sleep(300 * time.Millisecond)
 			var ErrorStart error
 			SearchStartResp, ErrorStart = user.SearchStartRequest(SearchStartReq)
 			//fmt.Println(SearchStartResp.Error())
@@ -96,8 +97,8 @@ func AvtotoParse(ReqXlsx []Request) ([]Avtoto_Output, error) {
 	}
 	bar.Finish() // Завершить
 
-	fmt.Println("[RB_PRO]: Ждём 10 секунд")
-	time.Sleep(10 * time.Second)
+	fmt.Println("[RB_PRO]: Ждём 20 секунд")
+	time.Sleep(20 * time.Second)
 	bar2 := pb.StartNew(len(ReqXlsx)).Prefix("[300 мс]: Опрашиваем результаты") // Включить показывание процесса
 
 	AllSize := len(output)
@@ -145,8 +146,8 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response, manuf string) avto
 	// Срок доставки меньше 7 и колличество больше 1
 	for _, value := range SearchResp.Parts {
 		delivery, _ := strconv.Atoi(value.Delivery)
-		MaxCount, _ := strconv.Atoi(value.MaxCount)
-		if delivery < 7 && (MaxCount > 1 || MaxCount == -1) {
+		// MaxCount, _ := strconv.Atoi(value.MaxCount)
+		if delivery < 7 { // && (MaxCount > 1 || MaxCount == -1)
 			NewParts.Parts = append(NewParts.Parts, value)
 		}
 	}
@@ -157,15 +158,19 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response, manuf string) avto
 	})
 	// }
 
-	// Цикл по всем параметрам
-	var NewPartsParts avtoto.SearchGetParts2Response
-	for _, value := range NewParts.Parts {
-		if strings.TrimSpace(strings.ToLower(value.Manuf)) == strings.TrimSpace(strings.ToLower(manuf)) {
-			NewPartsParts.Parts = append(NewPartsParts.Parts, value)
-			// OutputSearchGetParts2Response.Parts = append(OutputSearchGetParts2Response.Parts, value)
-			// SearchResp.Parts = append(SearchResp.Parts[:i], SearchResp.Parts[i+1])
-		}
+	// // Цикл по всем параметрам
+	// var NewPartsParts avtoto.SearchGetParts2Response
+	// for _, value := range NewParts.Parts {
+	// 	if strings.EqualFold(value.Manuf, manuf) {
+	// 		NewPartsParts.Parts = append(NewPartsParts.Parts, value)
+	// 		// OutputSearchGetParts2Response.Parts = append(OutputSearchGetParts2Response.Parts, value)
+	// 		// SearchResp.Parts = append(SearchResp.Parts[:i], SearchResp.Parts[i+1])
+	// 	}
+	// }
+
+	if len(NewParts.Parts) < 3 {
+		NewParts = SearchResp
 	}
 
-	return NewPartsParts
+	return NewParts
 }

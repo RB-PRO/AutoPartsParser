@@ -67,7 +67,7 @@ func SaveXlsx(AvtotoIsParse, ZZapIsParse bool, Avtoto []Avtoto_Output, ZZap []ZZ
 
 	// Сохраняем
 	dt := time.Now()
-	if ErrSave := f.SaveAs("Цены от " + dt.Format("15h04m 01-02-2006") + ".xlsx"); ErrSave != nil {
+	if ErrSave := f.SaveAs("Цены от " + dt.Format("2006-01-02_15h04m") + ".xlsx"); ErrSave != nil {
 		return ErrSave
 	}
 	return nil
