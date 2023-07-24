@@ -147,7 +147,7 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response, manuf string) avto
 	for _, value := range SearchResp.Parts {
 		delivery, _ := strconv.Atoi(value.Delivery)
 		// MaxCount, _ := strconv.Atoi(value.MaxCount)
-		if delivery < 7 { // && (MaxCount > 1 || MaxCount == -1)
+		if delivery < 7 && value.Manuf == manuf { // && (MaxCount > 1 || MaxCount == -1)
 			NewParts.Parts = append(NewParts.Parts, value)
 		}
 	}

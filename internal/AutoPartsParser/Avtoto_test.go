@@ -49,7 +49,7 @@ func TestSearch(t *testing.T) {
 		UserPassword: AvtotoDataAuf.UserPassword,
 	}
 	////////////////////
-	ValueInputName := "LR161110"
+	ValueInputName := "LR126119"
 	ValueInputManufacture := "LAND ROVER"
 	GetBrandsByCodeReq := avtoto.GetBrandsByCodeRequest{
 		SearchCode: ValueInputName,
