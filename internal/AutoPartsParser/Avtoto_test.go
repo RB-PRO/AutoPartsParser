@@ -49,14 +49,17 @@ func TestSearch(t *testing.T) {
 		UserPassword: AvtotoDataAuf.UserPassword,
 	}
 	////////////////////
-	ValueInputName := "LR126119"
+	ValueInputName := "LR035548"
 	ValueInputManufacture := "LAND ROVER"
 	GetBrandsByCodeReq := avtoto.GetBrandsByCodeRequest{
 		SearchCode: ValueInputName,
 	}
-	GetBrandsByCodeResp, _ := user.GetBrandsByCode(GetBrandsByCodeReq)
+	GetBrandsByCodeResp, ErrGetBrandsByCode := user.GetBrandsByCode(GetBrandsByCodeReq)
+	if ErrGetBrandsByCode != nil {
+		t.Error(ErrGetBrandsByCode)
+	}
 
-	// fmt.Printf(">>%+v\n", GetBrandsByCodeResp)
+	fmt.Printf(">>%+v\n", GetBrandsByCodeResp)
 	var BrandID string
 	for _, val := range GetBrandsByCodeResp.Brands {
 		// fmt.Println("---", val.Name, val.Manuf, ValueInput.Manufacture)
@@ -65,19 +68,23 @@ func TestSearch(t *testing.T) {
 		}
 	}
 
+	fmt.Println("BrandID", BrandID)
 	//
 	// Создать запрос старта поиска
 	SearchStartReq := avtoto.SearchStartRequest{
-		SearchCode:  ValueInputName,
-		Brand:       BrandID,
+		SearchCode: ValueInputName,
+		// Brand:       BrandID,
 		SearchCross: "off",
 	}
-	SearchStartResp, _ := user.SearchStartRequest(SearchStartReq)
+	SearchStartResp, ErrSearchStartRequest := user.SearchStartRequest(SearchStartReq)
+	if ErrSearchStartRequest != nil {
+		t.Error(ErrSearchStartRequest)
+	}
 
 	//
 	//
-	fmt.Println("[RB_PRO]: Ждём 20 секунд")
-	time.Sleep(20 * time.Second)
+	fmt.Println("[RB_PRO]: Ждём 15 секунд")
+	time.Sleep(15 * time.Second)
 	// Формируем запрос
 	SearchGetParts2Req := avtoto.SearchGetParts2Request{
 		ProcessSearchId: SearchStartResp.ProcessSearchID,
@@ -85,8 +92,12 @@ func TestSearch(t *testing.T) {
 	}
 
 	// Выполняем запрос
-	SearchResp, _ := SearchGetParts2Req.SearchGetParts2()
-	// fmt.Println(SearchResp)
+	SearchResp, ErrSearchGetParts2 := SearchGetParts2Req.SearchGetParts2()
+	if ErrSearchGetParts2 != nil {
+		t.Error(ErrSearchGetParts2)
+	}
+
+	fmt.Println(SearchResp)
 
 	for i, val := range SearchResp.Parts {
 		fmt.Printf("%d.\t%d\t%s\t%s\t%s\n", i, val.Price, val.Storage, val.Manuf, val.Name)
