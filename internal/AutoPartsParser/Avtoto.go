@@ -168,18 +168,23 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response, manuf string) avto
 	// 	}
 	// }
 
-	fmt.Println(len(NewParts.Parts))
-	if len(NewParts.Parts) < 3 {
-		NewParts = SearchResp
-		NewParts = avtoto.SearchGetParts2Response{}
+	// fmt.Println(len(NewParts.Parts))
 
-		// Срок доставки меньше 7 и колличество больше 1
-		for _, value := range SearchResp.Parts {
-			fmt.Println(value.Manuf, manuf)
-			if strings.EqualFold(value.Manuf, manuf) { // && (MaxCount > 1 || MaxCount == -1)
-				NewParts.Parts = append(NewParts.Parts, value)
-			}
+	OnliManuf := avtoto.SearchGetParts2Response{}
+	// Срок доставки меньше 7 и колличество больше 1
+	for _, value := range SearchResp.Parts {
+		// fmt.Println(value.Manuf, manuf)
+		if strings.EqualFold(value.Manuf, manuf) { // && (MaxCount > 1 || MaxCount == -1)
+			OnliManuf.Parts = append(OnliManuf.Parts, value)
 		}
+	}
+
+	if len(NewParts.Parts) > 0 && len(NewParts.Parts) < 3 {
+		// NewParts = avtoto.SearchGetParts2Response{}
+		NewParts.Parts = append(NewParts.Parts, OnliManuf.Parts...)
+	}
+	if len(NewParts.Parts) == 0 {
+		NewParts = OnliManuf
 	}
 	// strings.EqualFold()
 
