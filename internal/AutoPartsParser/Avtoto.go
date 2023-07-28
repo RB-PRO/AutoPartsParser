@@ -146,17 +146,15 @@ func Avtoto_Filter(SearchResp avtoto.SearchGetParts2Response, manuf string) avto
 	// Срок доставки меньше 7 и колличество больше 1
 	for _, value := range SearchResp.Parts {
 		delivery, _ := strconv.Atoi(value.Delivery)
-		// MaxCount, _ := strconv.Atoi(value.MaxCount)
-		if delivery < 7 && value.Manuf == manuf { // && (MaxCount > 1 || MaxCount == -1)
+		MaxCount, _ := strconv.Atoi(value.MaxCount)
+		if delivery < 7 && value.Manuf == manuf && (MaxCount > 1 || MaxCount == -1) { //
 			NewParts.Parts = append(NewParts.Parts, value)
 		}
 	}
 
-	// if len(NewParts.Parts) > 1 {
 	sort.Slice(NewParts.Parts, func(i, j int) (less bool) {
 		return NewParts.Parts[i].Price < NewParts.Parts[j].Price
 	})
-	// }
 
 	// // Цикл по всем параметрам
 	// var NewPartsParts avtoto.SearchGetParts2Response
